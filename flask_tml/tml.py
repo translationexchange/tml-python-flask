@@ -17,7 +17,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class Tml(object):
 
+    app = None
+    _default_locale = None
     _config = None
+
 
     def __init__(self, app=None, default_locale='en', configure_jinja=True):
         self._default_locale = default_locale

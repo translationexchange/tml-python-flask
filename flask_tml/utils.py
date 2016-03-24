@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from time import mktime
 from tml.tools.viewing_user import reset_viewing_user, set_viewing_user
 from tml.rules.contexts.gender import Gender
-from .exceptions import CookieNotParsed
 
 __author__ = 'xepa4ep'
 

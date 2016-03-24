@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from tml.utils import cached_property
 from tml.logger import LoggerMixin
 from tml.translator import Translator
-from .utils import cookie_name as get_cookie_name, decode_cookie, encode_cookie
+from tml.utils import cookie_name as get_cookie_name, decode_cookie, encode_cookie
 
 
 class TmlCookieHandler(LoggerMixin):
