@@ -31,6 +31,10 @@ def docs():
         'karen': User("Karen", User.FEMALE),
         'thomas': User("Thomas", User.MALE),
     }
+    users_ru = {
+        'michael': User("Миша", User.MALE),
+        'anna': User("Анна", User.FEMALE)
+    }
     data = {
         'users': users,
         'user_list': users.values(),
@@ -42,7 +46,14 @@ def docs():
             date.today() + timedelta(days=1)],
         'current_date': date.today()
     }
-    return render_template('docs/docs.html', users=data['users'], user_list=data['user_list'], ten=data['ten'], five=data['five'], dates=data['dates'], current_date=data['current_date'])
+    return render_template('docs/docs.html',
+                            users=data['users'],
+                            user_list=data['user_list'],
+                            ten=data['ten'],
+                            five=data['five'],
+                            dates=data['dates'],
+                            current_date=data['current_date'],
+                            users_ru=users_ru)
 
 
 @app.route('/console/')

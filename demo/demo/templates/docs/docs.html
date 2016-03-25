@@ -135,7 +135,7 @@ anna = {"name": "Anna", "gender": "anna"}
             <pre><code class="language-python">{% raw %} {% tropts locale="ru" %}{% trs "Hello world" %} {% endtropts %}{% endraw %}</code></pre>
 
             {% trs "To redefine generic tml options such as source or target locale use&#58;" %}
-            <pre><code class="language-python">{% raw %} {% tropts source="navigation" %} ... {% endtropts %}{% endraw %}</code></pre>
+            <pre><code class="language-python">{% raw %} {% tmlopts source="navigation" %} ... {% endtmlopts %}{% endraw %}</code></pre>
 
             <p>
             <ul>
@@ -498,10 +498,10 @@ anna = {"name": "Anna", "gender": "anna"}
 
             {% trs "Default options&#58;" %}
 
-            <pre><code class="language-python">{&shy;% tr
-people=people=[users.values(),
-':name',
-{"limit": 10, "joiner": "and", "separator": ", "}] %&shy;} {&shy;% endtr &shy;%}</code></pre>
+            <pre><code class="language-python">{&shy;% tr people=[users.values(),
+            ':name',
+            {"limit": 10, "joiner": "and", "separator": ", "}] %&shy;}
+{&shy;% endtr &shy;%}</code></pre>
 
 
             <div class="example">
@@ -745,9 +745,9 @@ endcomment #}
             </p>
             <div class="example">
               <div class="title">{% trs "example" %}</div>
-                    <pre class="code"><code class="language-python">{&shy;% tr actor=users.anna.name|trs, options={'locale':'ru'} %&shy;}{actor::nom} тестирует это приложение{&shy;% endtr %&shy;}</code></pre>
+                    <pre class="code"><code class="language-python">{&shy;% tr actor=users.anna.name|trs, options={'target_locale':'ru'} %&shy;}{actor::nom} тестирует это приложение{&shy;% endtr %&shy;}</code></pre>
               <div class="content">
-                  {% tr actor=users.anna.name|trs, options={'locale':'ru'}  %}{actor::nom} тестирует это приложение{% endtr %}<br>
+                  {% tr actor=users_ru.anna.name|trs, options={'target_locale':'ru'}  %}{actor::nom} тестирует это приложение{% endtr %}<br>
               </div>
             </div>
 
@@ -755,9 +755,9 @@ endcomment #}
             <p>{% trs "In grammar, genitive (abbreviated gen; also called the possessive case or second case) is the grammatical case that marks a noun as modifying another noun." %}</p>
             <div class="example">
               <div class="title">{% trs "example" %}</div>
-                    <pre class="code"><code class="language-python">{&shy;% tr actor=users.anna, target=users.michael.name|trs, options={'locale':'ru'} %&shy;}{actor|| пригласил, пригласила} {target::gen} на вечеринку{&shy;% endtr %&shy;}</code></pre>
+                    <pre class="code"><code class="language-python">{&shy;% tr actor=users.anna, target=users.michael.name|trs, options={'target_locale':'ru'} %&shy;}{actor|| пригласил, пригласила} {target::gen} на вечеринку{&shy;% endtr %&shy;}</code></pre>
               <div class="content">
-                  {% tr actor=users.anna, target=users.michael.name|trs, options={'locale':'ru'} %}{actor||пригласил,пригласила} {target::gen} на вечеринку{% endtr %}<br>
+                  {% tr actor=users_ru.anna, target=users_ru.michael.name|trs, options={'target_locale':'ru'} %}{actor||пригласил,пригласила} {target::gen} на вечеринку{% endtr %}<br>
                 <br>
               </div>
             </div>
@@ -766,11 +766,11 @@ endcomment #}
             <div class="example">
               <div class="title">{% trs "example" %}</div>
                     <pre class="code"><code class="language-python">{&shy;% for item in user_list %&shy;}
-  {&shy;% tr actor=users.michael, target=item.name|trs, options={'locale':'ru'} %&shy;}{actor|| подарил, подарила} подарок {target::dat}{&shy;% endtr %&shy;}<br>
+  {&shy;% tr actor=users_ru.michael, target=item.name|trs, options={'target_locale':'ru'} %&shy;}{actor|| подарил, подарила} подарок {target::dat}{&shy;% endtr %&shy;}<br>
 {&shy;% endfor %&shy;}</code></pre>
               <div class="content">
-                  {% for item in user_list %}
-                    {% tr actor=users.michael, target=item.name|trs, options={'locale':'ru'} %}{actor||подарил,подарила} подарок {target::dat}{% endtr %}<br>
+                  {% for item in users_ru.values() %}
+                    {% tr actor=users_ru.michael, target=item.name|trs, options={'target_locale':'ru'} %}{actor||подарил,подарила} подарок {target::dat}{% endtr %}<br>
                   {% endfor %}
               </div>
             </div>
@@ -778,29 +778,29 @@ endcomment #}
             <h4>Accusative Case - Винительный Падеж</h4>
             <div class="example">
               <div class="title">{% trs "example" %}</div>
-                    <pre class="code"><code class="language-python">{&shy;% tr actor_name=users.anna.name|trs, actor=[users.anna, ':name'], target=users.michael.name|trs, options={'locale':'ru'} %&shy;}{actor|| увидел, увидела} {target::acc} на вечеринке{&shy;% endtr %&shy;}</code></pre>
+                    <pre class="code"><code class="language-python">{&shy;% tr actor_name=users_ru.anna.name|trs, actor=[users_ru.anna, ':name'], target=users_ru.michael.name|trs, options={'target_locale':'ru'} %&shy;}{actor|| увидел, увидела} {target::acc} на вечеринке{&shy;% endtr %&shy;}</code></pre>
               <div class="content">
-                    {% tr actor_name=users.anna.name|trs, actor=[users.anna, ':name'], target=users.michael.name|trs, options={'locale':'ru'} %}{actor||увидел,увидела} {target::acc} на вечеринке{% endtr %}<br>
+                    {% tr actor_name=users_ru.anna.name|trs, actor=[users_ru.anna, ':name'], target=users_ru.michael.name|trs, options={'target_locale':'ru'} %}{actor||увидел,увидела} {target::acc} на вечеринке{% endtr %}<br>
               </div>
             </div>
 
             <h4>Instrumental Case - Творительный Падеж</h4>
             <div class="example">
               <div class="title">{% trs "example" %}</div>
-                    <pre class="code"><code class="language-python">{&shy;% tr actor=users.anna.name|trs, target=users.michael.name|trs, options={'locale':'ru'} %&shy;}{actor} гордится {target::ins}{&shy;% endtr %&shy;}<</code></pre>
+                    <pre class="code"><code class="language-python">{&shy;% tr actor=users_ru.anna.name|trs, target=users_ru.michael.name|trs, options={'target_locale':'ru'} %&shy;}{actor} гордится {target::ins}{&shy;% endtr %&shy;}<</code></pre>
               <div class="content">
-                  {% tr actor=users.anna.name|trs, target=users.michael.name|trs, options={'locale':'ru'}  %}{actor} гордится {target::ins}{% endtr %}<br>
+                  {% tr actor=users_ru.anna.name|trs, target=users_ru.michael.name|trs, options={'target_locale':'ru'}  %}{actor} гордится {target::ins}{% endtr %}<br>
               </div>
             </div>
 
             <h4>Prepositional Case - Предложный Падеж</h4>
             <div class="example">
               <div class="title">{% trs "example" %}</div>
-                  <pre class="code"><code class="language-python">{&shy;% tr actor=users.anna.name|trs, target=users.michael.name|trs, options={'locale':'ru'} %&shy;}{actor} думает о {target::pre}{&shy;% endtr %&shy;}<br>
-{&shy;% tr actor=users.michael.name|trs, target=users.anna.name|trs, options={'locale':'ru'} %&shy;}{actor} думает о {target::pre}{&shy;% endtr %&shy;}</code></pre>
+                  <pre class="code"><code class="language-python">{&shy;% tr actor=users_ru.anna.name|trs, target=users_ru.michael.name|trs, options={'target_locale':'ru'} %&shy;}{actor} думает о {target::pre}{&shy;% endtr %&shy;}<br>
+{&shy;% tr actor=users_ru.michael.name|trs, target=users_ru.anna.name|trs, options={'target_locale':'ru'} %&shy;}{actor} думает о {target::pre}{&shy;% endtr %&shy;}</code></pre>
               <div class="content">
-                  {% tr actor=users.anna.name|trs, target=users.michael.name|trs, options={'locale':'ru'} %}{actor} думает о {target::pre}{% endtr %}<br>
-                  {% tr actor=users.michael.name|trs, target=users.anna.name|trs, options={'locale':'ru'} %}{actor} думает о {target::pre}{% endtr %}<br>
+                  {% tr actor=users_ru.anna.name|trs, target=users_ru.michael.name|trs, options={'target_locale':'ru'} %}{actor} думает о {target::pre}{% endtr %}<br>
+                  {% tr actor=users_ru.michael.name|trs, target=users_ru.anna.name|trs, options={'target_locale':'ru'} %}{actor} думает о {target::pre}{% endtr %}<br>
               </div>
             </div>
 
@@ -816,7 +816,7 @@ endcomment #}
               <div class="title">{% trs "example" %}</div>
               <pre class="code"><code class="language-python">{&shy;% tropts source="sample_source" %&shy;}
   {&shy;% trs "Hello World" %&shy;}
-{&shy;% endtropts %&shy;}</code></pre>
+{&shy;% endtmlopts %&shy;}</code></pre>
               <div class="content">
                 {% tropts source="sample_source" %}
                   {% trs "Hello World" %}
