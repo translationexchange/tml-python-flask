@@ -135,7 +135,7 @@ anna = {"name": "Anna", "gender": "anna"}
             <pre><code class="language-python">{% raw %} {% tropts locale="ru" %}{% trs "Hello world" %} {% endtropts %}{% endraw %}</code></pre>
 
             {% trs "To redefine generic tml options such as source or target locale use&#58;" %}
-            <pre><code class="language-python">{% raw %} {% tmlopts source="navigation" %} ... {% endtmlopts %}{% endraw %}</code></pre>
+            <pre><code class="language-python">{% raw %} {% tropts source="navigation" %} ... {% endtropts %}{% endraw %}</code></pre>
 
             <p>
             <ul>
@@ -816,7 +816,7 @@ endcomment #}
               <div class="title">{% trs "example" %}</div>
               <pre class="code"><code class="language-python">{&shy;% tropts source="sample_source" %&shy;}
   {&shy;% trs "Hello World" %&shy;}
-{&shy;% endtmlopts %&shy;}</code></pre>
+{&shy;% endtropts %&shy;}</code></pre>
               <div class="content">
                 {% tropts source="sample_source" %}
                   {% trs "Hello World" %}

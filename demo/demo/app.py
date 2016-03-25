@@ -17,8 +17,6 @@ tml.Tml(app)
 
 @app.route('/')
 def index():
-    import pdb
-    pdb.set_trace()
     return render_template('docs/index.html')
 
 
