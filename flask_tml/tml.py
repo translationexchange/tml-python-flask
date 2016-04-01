@@ -3,6 +3,7 @@ from __future__ import absolute_import
 __author__ = 'xepa4ep'
 
 import os
+import re
 from json import dumps
 from flask import request
 from tml.config import CONFIG
@@ -60,6 +61,7 @@ class Tml(object):
 
         app.before_request(self.activate_tml)
         app.after_request(self.deactivate_tml)
+        app.after_request(self.agent_inject)
         self._previous_locale = None
 
     def ignore_tml(self):
@@ -109,6 +111,23 @@ class Tml(object):
             fn = self.__before_response.pop()
             fn(response)
         return response
+
+    def agent_inject(self, response):
+        if self.ignore_tml():  # ignore initialization of sdk
+            return response
+
+        agent_config = CONFIG.get('agent', {})
+        if not agent_config['force_injection']:
+            return response
+
+        if agent_config['enabled'] and agent_config['force_injection']:
+            data = response.data
+            pattern = re.compile(b'</head>', re.IGNORECASE)
+            agent_script = self.app.jinja_env.from_string("{% tml_inline 'middleware' %}").render()
+            response.data = pattern.sub(bytes(agent_script) + b'</head>', response.data)
+            response.headers['Content-Length'] = len(response.data)
+
+            return response
 
     def _filter_options(self, options):
         return {k: options[k] for k in
