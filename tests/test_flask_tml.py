@@ -1,16 +1,19 @@
-# from django.test import SimpleTestCase
-
 import pytest
 import os
 import tempfile
 import six
-from flask import Flask
+import urllib2
+from flask import Flask, url_for, request
 from flask_tml import tml
+from flask_tml.translator import Translation
+from flask_tml.tml_cookies import TmlCookieHandler
+from flask_tml.utils import ts
 from jinja2.environment import Template
 from tml.strings import to_string
+from datetime import datetime, timedelta
+from time import mktime
 
-
-__author__ = 'xepa4ep'
+author = 'xepa4ep'
 
 
 class FakeUser(object):
@@ -81,3 +84,46 @@ def test_tr_tag(get_template):
 
     tmpl = to_string("{% tr user=users.michael %}This is {user|male: he, female: she, other: it}{% endtr %}")
     assert to_string(get_template(tmpl).render(users=users)) == to_string('This is he')
+
+
+def test_utils():
+    timestamp = ts()
+    assert timestamp == int(mktime(datetime.utcnow().timetuple()))
+
+@pytest.mark.usefixtures('live_server')
+class TestLiveServer():
+
+    def test_server_is_up_and_running(self, app):
+        res = urllib2.urlopen(url_for('index', _external=True))
+        assert b'OK' in res.read()
+        assert res.code == 200
+
+    def test_request_headers(self, app, client):
+        translation = Translation.instance()
+        res = client.get(url_for('index'), headers=[('http-accept-language', 'ru')])
+        assert translation.get_header_from_request(request, 'http-accept-language') == 'ru'
+
+        res = client.get(url_for('index'), headers=[('http-accept-language', 'ru')])
+        cookie_handler = TmlCookieHandler(request, translation.application_key)
+        assert translation.get_language_from_request(request, cookie_handler, app.config) == 'ru'
+
+        res = client.get(url_for('index', locale='en'))
+        cookie_handler = TmlCookieHandler(request, translation.application_key)
+        assert translation.get_language_from_request(request, cookie_handler, app.config) == 'en'
+
+        res = client.get(url_for('index'))
+        cookie_handler = TmlCookieHandler(request, translation.application_key)
+        assert translation.get_language_from_request(request, cookie_handler, app.config) == 'en'
+
+        res = client.get(url_for('template', locale='ru'))
+        cookie_handler = TmlCookieHandler(request, translation.application_key)
+        assert translation.get_language_from_request(request, cookie_handler, app.config) == 'ru'
+
+        res = client.get(url_for('template', locale='en'))
+        cookie_handler = TmlCookieHandler(request, translation.application_key)
+        assert translation.get_language_from_request(request, cookie_handler, app.config) == 'en'
+
+        res = urllib2.urlopen(url_for('template', _external=True))
+        data = res.read()
+        assert b'Trex.init' in data
+        assert translation.application_key in data

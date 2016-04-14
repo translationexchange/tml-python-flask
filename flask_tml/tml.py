@@ -8,7 +8,6 @@ from json import dumps
 from flask import request
 from tml.config import CONFIG
 from . import translator
-from .utils import get_preferred_languages
 from .tml_cookies import TmlCookieHandler
 
 
@@ -73,7 +72,8 @@ class Tml(object):
         source = '%s' % (request.url_rule.endpoint)
         self.translation = translator.Translation.instance(tml_settings=self._config)
         cookie_handler = TmlCookieHandler(request, self.translation.application_key)
-        locale = self.get_tml_locale(request, cookie_handler)
+        locale = self.translation.get_language_from_request(
+            request, cookie_handler, self.app.config)
         if locale != self._previous_locale:   # force template cache invalidation
             if self.app.jinja_env.cache:
                 self.app.jinja_env.cache.clear()
@@ -85,31 +85,16 @@ class Tml(object):
             force_context=True)
         return None
 
-    def get_tml_locale(self, request, cookie_handler):
-        locale = None
-        locale = request.args.get('locale', None)
-        if not locale:
-            locale = cookie_handler.tml_locale
-            if not locale:
-                if self.translation.config.get('subdomain', None):
-                    locale = request.host[:-len(self.app.config['SERVER_NAME'])].rstrip('.')
-                else:
-                    locale = get_preferred_languages(request)
-        else:
-            self.__before_response.add(
-                lambda response: cookie_handler.update(response, locale=locale))
-        return locale
-
     def deactivate_tml(self, response):
         if self.ignore_tml():  # ignore initialization of sdk
             return response
+        while self.translation._before_response:
+            fn = self.translation._before_response.pop()
+            fn(response)
         self._previous_locale = self.translation.locale
         translator.Translation.instance().deactivate_all()
         self.request = None
         self.translation = None
-        while self.__before_response:
-            fn = self.__before_response.pop()
-            fn(response)
         return response
 
     def agent_inject(self, response):
@@ -128,7 +113,3 @@ class Tml(object):
             response.headers['Content-Length'] = len(response.data)
 
             return response
-
-    def _filter_options(self, options):
-        return {k: options[k] for k in
-                CONFIG['supported_tr_opts'] if k in options}

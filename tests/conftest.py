@@ -1,5 +1,5 @@
 import pytest
-from flask import Flask
+from flask import Flask, render_template
 from flask_tml import tml
 
 
@@ -12,6 +12,14 @@ def app(request):
 
     def teardown():
         pass
+
+    @app.route('/')
+    def index():
+        return "OK"
+
+    @app.route('/template')
+    def template():
+        return render_template('base.html')
 
     request.addfinalizer(teardown)
     return app

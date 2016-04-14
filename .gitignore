@@ -11,3 +11,5 @@ tml-env
 .DS_Store
 te
 logs
+dist
+build
