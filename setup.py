@@ -130,7 +130,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'tml-jinja2>=0.0.1',
+        'tml-jinja2>=0.3.1',
         'Flask>=0.10.1']
 
     # List additional groups of dependencies here (e.g. development
