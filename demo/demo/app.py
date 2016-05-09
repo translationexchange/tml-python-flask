@@ -6,6 +6,7 @@ from flask_tml import tml, translator
 from tml.strings import to_string
 from tml.translation import TranslationOption
 from tml.decoration.parser import parse as decoration_parser
+from tml.tokenizers.dom import DomTokenizer
 from .models import User
 
 
@@ -69,13 +70,24 @@ def translate():
     data = loads(request.form.get('tml_tokens') or "{}")
     description = request.form.get('tml_context')
     locale = request.form.get('tml_locale')
-    trans_value = fetch_translation(label, data, description, locale)
+    trh = request.form.get('trh')
+    if trh:
+        trans_value = fetch_trh_translation(label, data, description, locale)
+    else:
+        trans_value = fetch_translation(label, data, description, locale)
     return trans_value
+
 
 def fetch_translation(label, data, description, locale):
     translator.Translation.instance().activate(locale)
     language = translator.Translation.instance().context.language
-    option = translator.TranslationOption(label, language)
+    option = TranslationOption(label, language)
     return decoration_parser(option.execute(data, options={})).render(data)
+
+
+def fetch_trh_translation(label, data, description, locale):
+    translator.Translation.instance().activate(locale)
+    dt = DomTokenizer({}, {'debug': True})
+    return dt.translate(label)
 
 
